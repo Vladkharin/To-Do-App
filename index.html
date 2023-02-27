@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>To-Do App</title>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <a href=""><h1>To-Do App</h1></a>
+      <a href=""><h1>To-Do App</h1></a>
     </header>
 
     <section class="work-area">
-        <div class="work-area__wrapper">
-            <h2>Задачи</h2>
-            <div class="work-area__wrapper-items">
-                <div class="work-area__wrapper-item">
-                    <div class="left-side">
-                        <button class="not-checked"></button>
-                        <div class="items-title">vlad</div>
-                    </div>
-                    <div class="right-side">
-                        <button class="edit"></button>
-                        <button class="delete"></button>
-                    </div>
-
-                </div>
-            </div>
+      <div class="work-area__wrapper">
+        <h2>Задачи</h2>
+        <div class="work-area__wrapper-items">
+          <div class="work-area__wrapper-item">
+            <button class="not-checked"></button>
+            <div class="items-title">vlad</div>
+            <button class="edit"></button>
+            <button class="delete"></button>
+            <div class="line none"></div>
+          </div>
+          <div class="work-area__wrapper-item">
+            <button class="not-checked"></button>
+            <div class="items-title">lox</div>
+            <button class="edit"></button>
+            <button class="delete"></button>
+            <div class="line none"></div>
+          </div>
         </div>
+        <form action="#" class="work-area__form">
+          <textarea class="textarea" type="text"> </textarea>
+          <button class="submit" type="submit">добавить задачу</button>
+        </form>
+      </div>
     </section>
 
     <script src="./script.js"></script>
-</body>
+  </body>
 </html>
