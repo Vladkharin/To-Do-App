@@ -46,7 +46,7 @@ h1 {
   border: 1.5px solid;
 }
 
-.checked {
+.checked{
   background-image: url("icons/checked.svg");
   height: 30px;
   width: 30px;
@@ -60,7 +60,8 @@ h1 {
 }
 
 .work-area__wrapper-item,
-.work-area__form {
+.work-area__form-add, 
+.work-area__form-edit {
   padding: 10px;
   border: 1px solid;
   position: relative;
@@ -74,6 +75,10 @@ h1 {
 
 .block {
   display: block;
+}
+
+.flex{
+  display: flex;
 }
 
 .none {
@@ -115,7 +120,8 @@ textarea {
   height: 50px;
 }
 
-.submit {
+.submit-add, .submit-edit {
   height: 50px;
   width: 115px;
 }
+
