@@ -4,15 +4,15 @@ window.addEventListener("DOMContentLoaded", () => {
   const buttonSubmitEdit = document.querySelector(".submit-edit");
   const textareaAdd = document.querySelector(".textarea-add");
   const textareaEdit = document.querySelector(".textarea-edit");
-  const formEdit = document.querySelector('.work-area__form-edit')
-  const formAdd = document.querySelector('.work-area__form-add')
+  const formEdit = document.querySelector(".work-area__form-edit");
+  const formAdd = document.querySelector(".work-area__form-add");
 
   const tasks = [];
   let id = 1;
 
-  function addTask(id, isChecked, stringText) {
+  function addTask(isChecked, stringText) {
     let task = {
-      id: id,
+      id: id++,
       checked: isChecked,
       text: stringText,
     };
@@ -20,56 +20,63 @@ window.addEventListener("DOMContentLoaded", () => {
     tasks.push(task);
   }
 
+  addTask(false, "vlad");
+
   function editText(textValue, id) {
-    tasks.forEach((task) => {
-      if (task["id"] === id) {
-        task["text"] = textValue;
-      }
-    });
+    const task = tasks.find((task) => task.id === id);
+    task["text"] = textValue;
   }
 
   function toogleTask(id) {
-    tasks.forEach((task) => {
-      if (task["id"] === id) {
-        if (task["checked"]) {
-          task["checked"] = false;
-        } else {
-          task["checked"] = true;
-        }
-      }
-    });
+    const task = tasks.find((task) => task.id === id);
+    if (task["checked"]) {
+      task["checked"] = false;
+    } else {
+      task["checked"] = true;
+    }
   }
 
   function deleteTask(id) {
+    const task = tasks.find((task) => task.id === id);
+    const taskIndex = tasks.indexOf(task);
+    tasks.splice(taskIndex, 1);
+  }
+
+  // function enableAndDisableButtonSubmit() {
+  //   if (textareaAdd.value === '' || textareaEdit.value === ''){
+  //     buttonSubmitAdd.setAttribute('disabled', true)
+  //   } else {
+  //     buttonSubmitAdd.removeAttribute('disabled')
+  //   }
+  // }
+
+  function createItemLocalStorage() {
+    localStorage.setItem("id", id);
     tasks.forEach((task, i) => {
-      if (task["id"] === id) {
-        tasks.splice(i, 1);
-      }
+      const serialTask = JSON.stringify(task);
+      console.log(serialTask);
+      localStorage.setItem(task.id, serialTask);
     });
   }
 
-  function createItemLocalStorage() {
-    tasks.forEach((task, i) => {
-      const serialTask = JSON.stringify(task)
-      console.log(serialTask)
-      localStorage.setItem(i+1, serialTask);
-    })
-  }
-
   function deleteItemLocalStorage(id) {
-    localStorage.removeItem(id)
+    localStorage.removeItem(id);
   }
 
   function getItemLocalStorage() {
-    for(let i=0; i<localStorage.length; i++) {
+    for (let i = 0; i < localStorage.length; i++) {
       let key = localStorage.key(i);
-      const item = JSON.parse(localStorage.getItem(key))
-      tasks.push(item)
-      console.log(tasks)
+      if (key === "id") {
+        id = localStorage.getItem(key);
+        continue;
+      }
+      const item = JSON.parse(localStorage.getItem(key));
+      tasks.push(item);
+      console.log(tasks);
     }
-    tasks.reverse()
+    tasks.sort((a, b) => (a["id"] > b["id"] ? 1 : -1));
+    console.log(tasks);
   }
-  getItemLocalStorage()
 
   function createTasksElement(parentSelector) {
     const parent = document.querySelector(parentSelector);
@@ -78,7 +85,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const element = document.createElement("div");
       element.setAttribute("id", task["id"]);
       element.classList.add("work-area__wrapper-item");
-      if (task['checked']) {
+      if (task["checked"]) {
         element.innerHTML = `
         <button class="checked"></button>
         <div class="items-title">${task["text"]}</div>
@@ -97,6 +104,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       parent.append(element);
+      textareaAdd.value = "";
     });
   }
 
@@ -104,20 +112,18 @@ window.addEventListener("DOMContentLoaded", () => {
     const allElement = document.querySelectorAll(".work-area__wrapper-item");
     allElement.forEach((element) => {
       element.remove();
-      
     });
   }
-  
-  createTasksElement(".work-area__wrapper-items");
 
   function editElement(id) {
-    buttonSubmitEdit.addEventListener('click', () => {
-      editText(textareaEdit.value, id)
-      deleteAllElement()
+    buttonSubmitEdit.addEventListener("click", () => {
+      editText(textareaEdit.value, id);
+      createItemLocalStorage();
+      deleteAllElement();
       createTasksElement(".work-area__wrapper-items");
-      formEdit.classList.add('none')
-      formAdd.classList.remove('none')
-    })
+      formEdit.classList.add("none");
+      formAdd.classList.remove("none");
+    });
   }
 
   function operationsOnElements() {
@@ -125,7 +131,7 @@ window.addEventListener("DOMContentLoaded", () => {
       if (event.target && event.target.classList.contains("delete")) {
         let parentId = event.target.parentElement.getAttribute("id");
         deleteTask(Number(parentId));
-        deleteItemLocalStorage(Number(parentId))
+        deleteItemLocalStorage(Number(parentId));
         deleteAllElement();
         createTasksElement(".work-area__wrapper-items");
       } else if (
@@ -144,40 +150,41 @@ window.addEventListener("DOMContentLoaded", () => {
           event.target.classList.remove("not-checked");
           lineChecked.classList.remove("none");
           editButton.setAttribute("disabled", true);
+          createItemLocalStorage();
         } else {
           toogleTask(Number(parent.getAttribute("id")));
           event.target.classList.add("not-checked");
           lineChecked.classList.add("none");
           event.target.classList.remove("checked");
           lineChecked.classList.remove("block");
-          editButton.setAttribute("disabled", false);
+          editButton.removeAttribute("disabled");
+          createItemLocalStorage();
         }
       } else if (event.target && event.target.classList.contains("edit")) {
-        formEdit.classList.remove('none')
-        formAdd.classList.add('none')
+        formEdit.classList.remove("none");
+        formAdd.classList.add("none");
         let parent = event.target.parentElement;
         const title = parent.querySelector(".items-title").textContent;
         itemsWrapper.removeChild(parent);
         textareaEdit.value = title;
-        editElement(Number(parent.getAttribute('id')))
+        editElement(Number(parent.getAttribute("id")));
+        createItemLocalStorage();
       }
-      console.log(tasks)
+      console.log(tasks);
     });
   }
 
-
-  function createNewElement () {
-    buttonSubmitAdd.addEventListener('click', () => {
-      addTask(id++, false, textareaAdd.value)
+  function createNewElement() {
+    buttonSubmitAdd.addEventListener("click", () => {
+      addTask(false, textareaAdd.value);
       deleteAllElement();
       createTasksElement(".work-area__wrapper-items");
-      createItemLocalStorage()
-    })
+      createItemLocalStorage();
+    });
   }
 
-
-  createNewElement()
+  getItemLocalStorage();
+  createTasksElement(".work-area__wrapper-items");
+  createNewElement();
   operationsOnElements();
-
-
 });
