@@ -16,11 +16,12 @@ window.addEventListener("DOMContentLoaded", () => {
       checked: isChecked,
       text: stringText,
     };
-
-    tasks.push(task);
+    if (task['text'].match(/\S/g)) {
+      tasks.push(task);
+    } else {
+      console.log('Textarea value is empty')
+    }
   }
-
-  addTask(false, "vlad");
 
   function editText(textValue, id) {
     const task = tasks.find((task) => task.id === id);
