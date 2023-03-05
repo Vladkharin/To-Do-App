@@ -9,7 +9,7 @@ const formAdd = document.querySelector(".work-area__form-add");
 let tasks = [];
 let currentlyEditedId;
 
-let autoId = 0;
+let autoId = 1;
 function addTask(isChecked, text) {
   let task = {
     id: autoId,
@@ -28,10 +28,10 @@ function editText(textValue, id) {
 
 function toogleTask(id) {
   const task = tasks.find((task) => task.id === id);
-  if (task["checked"]) {
-    task["checked"] = false;
+  if (task.checked) {
+    task.checked= false;
   } else {
-    task["checked"] = true;
+    task.checked = true;
   }
 }
 
@@ -72,19 +72,11 @@ function displayTasks() {
         `
     )
     .join("");
-}
-
-function handleEditButtonClick() {
-  editText(textareaEdit.value, currentlyEditedId);
-  setLocalStorageData();
-  displayTasks();
-  formEdit.classList.add("none");
-  formAdd.classList.remove("none");
+  console.log(tasks);
 }
 
 function deleteTask(event) {
   let parentId = event.target.parentElement.getAttribute("id");
-  removeTask(Number(parentId));
   deleteItemLocalStorage(Number(parentId));
   displayTasks();
 }
@@ -117,6 +109,14 @@ function uncheckTask(event) {
   setLocalStorageData();
 }
 
+function handleEditButtonClick() {
+  formEdit.classList.add("none");
+  formAdd.classList.remove("none");
+  editText(textareaEdit.value, currentlyEditedId);
+  setLocalStorageData();
+  displayTasks();
+}
+
 function editTask(event) {
   formEdit.classList.remove("none");
   formAdd.classList.add("none");
@@ -125,8 +125,8 @@ function editTask(event) {
   itemsWrapper.removeChild(parent);
   textareaEdit.value = title;
   currentlyEditedId = Number(parent.getAttribute("id"));
-  handleEditButtonClick();
-  setLocalStorageData();
+  // handleEditButtonClick();
+  // setLocalStorageData();
 }
 
 function handleWrapperClick(event) {
@@ -146,6 +146,7 @@ function handleWrapperClick(event) {
 
 function handleAddButtonClick() {
   addTask(false, textareaAdd.value);
+  textareaAdd.value = ''
   displayTasks();
   setLocalStorageData();
 }
